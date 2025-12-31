@@ -10,6 +10,15 @@ export async function GET(request: Request) {
     const maxPrice = searchParams.get('maxPrice')
     const propertyType = searchParams.get('propertyType')
     const listingType = searchParams.get('listingType')
+    const parking = searchParams.get('parking')
+    const amenities = searchParams.get('amenities')
+    const moveInDate = searchParams.get('moveInDate')
+    const leaseTerm = searchParams.get('leaseTerm')
+    const minIncome = searchParams.get('minIncome')
+    const minCredit = searchParams.get('minCredit')
+    const hasOpenHouse = searchParams.get('hasOpenHouse')
+    const priceReduced = searchParams.get('priceReduced')
+    const hasVirtualTour = searchParams.get('hasVirtualTour')
 
     const where: any = {
       status: 'ACTIVE',
@@ -21,6 +30,54 @@ export async function GET(request: Request) {
     if (maxPrice) where.price = { ...where.price, lte: parseFloat(maxPrice) }
     if (propertyType) where.propertyType = propertyType
     if (listingType) where.listingType = listingType
+
+    // Advanced filters
+    if (parking) where.parking = parking
+    
+    if (amenities) {
+      const amenitiesArray = amenities.split(',')
+      where.amenities = {
+        hasEvery: amenitiesArray
+      }
+    }
+
+    if (moveInDate) {
+      where.moveInDate = {
+        lte: new Date(moveInDate)
+      }
+    }
+
+    if (leaseTerm) {
+      where.leaseTerm = parseInt(leaseTerm)
+    }
+
+    if (minIncome) {
+      where.incomeRequirement = {
+        lte: parseFloat(minIncome)
+      }
+    }
+
+    if (minCredit) {
+      where.creditRequirement = {
+        lte: parseInt(minCredit)
+      }
+    }
+
+    if (hasOpenHouse === 'true') {
+      where.openHouseDate = {
+        gte: new Date() // Open house in the future
+      }
+    }
+
+    if (priceReduced === 'true') {
+      where.priceReduced = true
+    }
+
+    if (hasVirtualTour === 'true') {
+      where.virtualTourUrl = {
+        not: null
+      }
+    }
 
     const properties = await prisma.property.findMany({
       where,

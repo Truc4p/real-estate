@@ -55,6 +55,11 @@ async function main() {
       ],
       features: ['Hardwood Floors', 'City Views', 'In-Unit Laundry', 'Parking'],
       yearBuilt: 2020,
+      virtualTourUrl: 'https://my.matterport.com/show/?m=example123',
+      floorPlans: [
+        'https://images.pexels.com/photos/8293778/pexels-photo-8293778.jpeg?auto=compress&cs=tinysrgb&w=1200',
+        'https://images.pexels.com/photos/8293773/pexels-photo-8293773.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      ],
       userId: user.id,
     },
     {
@@ -82,6 +87,10 @@ async function main() {
       ],
       features: ['Large Backyard', 'Updated Kitchen', 'Near Schools', '2-Car Garage'],
       yearBuilt: 2015,
+      virtualTourUrl: 'https://my.matterport.com/show/?m=example456',
+      floorPlans: [
+        'https://images.pexels.com/photos/7031705/pexels-photo-7031705.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      ],
       userId: user.id,
     },
     {
@@ -109,6 +118,9 @@ async function main() {
       ],
       features: ['Bay Views', 'Pool', 'Gym', 'Concierge', 'Parking'],
       yearBuilt: 2018,
+      floorPlans: [
+        'https://images.pexels.com/photos/8293778/pexels-photo-8293778.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      ],
       userId: user.id,
     },
     {

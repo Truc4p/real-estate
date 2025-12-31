@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, Heart, User, Menu, X } from 'lucide-react'
+import { Home, Heart, User, Menu, X, Map } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Navbar() {
@@ -24,6 +24,10 @@ export default function Navbar() {
             </Link>
             <Link href="/properties?type=rent" className="text-gray-700 hover:text-primary-600 font-medium">
               Rent
+            </Link>
+            <Link href="/map" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-1">
+              <Map className="w-4 h-4" />
+              Map Search
             </Link>
             <Link href="/agents" className="text-gray-700 hover:text-primary-600 font-medium">
               Find Agents
@@ -60,6 +64,10 @@ export default function Navbar() {
               </Link>
               <Link href="/properties?type=rent" className="text-gray-700 hover:text-primary-600 font-medium">
                 Rent
+              </Link>
+              <Link href="/map" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-1">
+                <Map className="w-4 h-4" />
+                Map Search
               </Link>
               <Link href="/agents" className="text-gray-700 hover:text-primary-600 font-medium">
                 Find Agents

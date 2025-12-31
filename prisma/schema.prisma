@@ -47,11 +47,25 @@ model Property {
   images       String[]
   features     String[]
   yearBuilt    Int
+  virtualTourUrl String?      // Optional Matterport or 3D tour URL
+  floorPlans   String[]       @default([]) // Array of floor plan image URLs
+  
+  // Advanced filters
+  parking         ParkingType?
+  amenities       String[]       @default([]) // pool, gym, doorman, etc.
+  moveInDate      DateTime?      // Available move-in date
+  leaseTerm       Int?           // Lease term in months (for rentals)
+  incomeRequirement Float?       // Monthly income requirement
+  creditRequirement Int?         // Minimum credit score
+  openHouseDate   DateTime?      // Next open house date
+  priceReduced    Boolean        @default(false) // Recently reduced price
+  originalPrice   Float?         // Original price if reduced
   
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   favorites    Favorite[]
+  neighborhood NeighborhoodData?
   
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -61,7 +75,44 @@ model Property {
   @@index([listingType])
   @@index([status])
   @@index([price])
+  @@index([priceReduced])
+  @@index([moveInDate])
   @@map("properties")
+}
+
+model NeighborhoodData {
+  id            String   @id @default(cuid())
+  propertyId    String   @unique
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  // Scores
+  walkScore     Int?     // 0-100
+  transitScore  Int?     // 0-100
+  bikeScore     Int?     // 0-100
+  
+  // Schools
+  schools       Json?    // Array of school objects with name, rating, distance, grades
+  
+  // Crime statistics
+  crimeRate     String?  // e.g., "Low", "Medium", "High"
+  crimeScore    Int?     // 0-100 (higher is safer)
+  crimeData     Json?    // Detailed crime statistics
+  
+  // Nearby amenities
+  amenities     Json?    // Array of nearby restaurants, shops, parks with distance
+  
+  // Demographics
+  demographics  Json?    // Population, median age, median income, etc.
+  
+  // Area pricing
+  avgRentPrice  Float?   // Average rent in area
+  avgSalePrice  Float?   // Average sale price in area
+  pricePerSqFt  Float?   // Average price per sq ft
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("neighborhood_data")
 }
 
 model Favorite {
@@ -117,4 +168,12 @@ enum PropertyStatus {
   PENDING
   SOLD
   RENTED
+}
+
+enum ParkingType {
+  GARAGE
+  STREET
+  NONE
+  COVERED
+  CARPORT
 }

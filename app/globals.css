@@ -15,9 +15,44 @@
 
 /* Mapbox styles */
 .mapboxgl-popup-content {
-  @apply rounded-lg shadow-lg;
+  @apply rounded-lg shadow-lg p-0;
+  max-width: 280px;
 }
 
 .mapboxgl-popup-close-button {
   @apply text-gray-600 hover:text-gray-900;
+  font-size: 24px;
+  padding: 4px 8px;
 }
+
+.mapboxgl-popup-tip {
+  border-top-color: white;
+}
+
+.property-popup {
+  @apply overflow-hidden;
+}
+
+.property-popup img {
+  @apply w-full;
+}
+
+/* Mapbox Draw custom styles */
+.mapbox-gl-draw_ctrl-draw-btn {
+  @apply bg-white hover:bg-gray-50;
+}
+
+.mapbox-gl-draw_ctrl-draw-btn.active {
+  @apply bg-primary-600 text-white;
+}
+
+/* Custom marker styles */
+.custom-marker {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.custom-marker:hover {
+  transform: scale(1.1);
+}
+
