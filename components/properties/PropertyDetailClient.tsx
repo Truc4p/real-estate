@@ -11,6 +11,11 @@ import {
 import { formatPrice, formatNumber } from '@/lib/utils'
 import MapView from '@/components/map/MapView'
 import NeighborhoodInfo from './NeighborhoodInfo'
+import RecentlyViewed from './RecentlyViewed'
+import FinancialTools from './FinancialTools'
+import PriceHistoryChart from './PriceHistoryChart'
+import { useFavorites } from '@/lib/hooks/useFavorites'
+import { useRecentlyViewed } from '@/lib/hooks/useRecentlyViewed'
 
 interface PropertyDetailClientProps {
   property: Property & {
@@ -33,9 +38,13 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   const [showReportModal, setShowReportModal] = useState(false)
   const [showFloorPlanModal, setShowFloorPlanModal] = useState(false)
   const [currentFloorPlanIndex, setCurrentFloorPlanIndex] = useState(0)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [neighborhoodData, setNeighborhoodData] = useState<NeighborhoodData | null>(null)
   const [loadingNeighborhood, setLoadingNeighborhood] = useState(true)
+
+  const { toggleFavorite, isFavorite } = useFavorites()
+  const { addRecentProperty } = useRecentlyViewed()
+  const favorite = isFavorite(property.id)
 
   const images = property.images.length > 0 
     ? property.images 
@@ -68,6 +77,17 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
     fetchNeighborhoodData()
   }, [property.id])
+
+  // Track recently viewed property
+  useEffect(() => {
+    addRecentProperty(property.id)
+  }, [property.id, addRecentProperty])
+
+  const handleFavoriteClick = () => {
+    toggleFavorite(property.id)
+    setIsAnimating(true)
+    setTimeout(() => setIsAnimating(false), 600)
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -216,14 +236,14 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 
                 <div className="flex gap-2 ml-4">
                   <button 
-                    onClick={() => setIsFavorite(!isFavorite)}
+                    onClick={handleFavoriteClick}
                     className={`p-2.5 rounded-lg border transition-all ${
-                      isFavorite 
+                      favorite 
                         ? 'bg-red-50 border-red-300 text-red-600' 
                         : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
-                    }`}
+                    } ${isAnimating ? 'animate-heart-beat' : ''}`}
                   >
-                    <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${favorite ? 'fill-current' : ''}`} />
                   </button>
                   <button className="p-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors">
                     <Share2 className="w-5 h-5" />
@@ -382,6 +402,29 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 </div>
               )}
             </div>
+
+            {/* Price History & Market Trends */}
+            <PriceHistoryChart
+              propertyId={property.id}
+              currentPrice={property.price}
+              originalPrice={property.originalPrice ?? undefined}
+              priceReduced={property.priceReduced}
+              city={property.city}
+              state={property.state}
+              bedrooms={property.bedrooms}
+              listingType={property.listingType}
+              createdAt={property.createdAt}
+            />
+
+            {/* Financial Tools (for rentals) */}
+            {property.listingType === 'FOR_RENT' && (
+              <FinancialTools
+                monthlyRent={property.price}
+                securityDeposit={property.price}
+                city={property.city}
+                state={property.state}
+              />
+            )}
           </div>
 
           {/* Sidebar */}
@@ -547,6 +590,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               </div>
             )}
           </div>
+        </div>
+
+        {/* Recently Viewed */}
+        <div className="mt-8">
+          <RecentlyViewed currentPropertyId={property.id} />
         </div>
       </div>
 

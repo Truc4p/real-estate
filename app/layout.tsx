@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 import Navbar from '@/components/layout/Navbar'
+import ComparisonBar from '@/components/properties/ComparisonBar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,6 +25,7 @@ export default function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
+          <ComparisonBar />
         </Providers>
       </body>
     </html>

@@ -46,6 +46,40 @@ export async function PUT(
   try {
     const body = await request.json()
     
+    // Get the current property to track changes
+    const currentProperty = await prisma.property.findUnique({
+      where: { id: params.id },
+    });
+
+    if (!currentProperty) {
+      return NextResponse.json(
+        { error: 'Property not found' },
+        { status: 404 }
+      );
+    }
+
+    // Track price changes
+    if (body.price && body.price !== currentProperty.price) {
+      await prisma.priceHistory.create({
+        data: {
+          propertyId: params.id,
+          oldPrice: currentProperty.price,
+          newPrice: body.price,
+        },
+      });
+    }
+
+    // Track status changes
+    if (body.status && body.status !== currentProperty.status) {
+      await prisma.statusHistory.create({
+        data: {
+          propertyId: params.id,
+          oldStatus: currentProperty.status,
+          newStatus: body.status,
+        },
+      });
+    }
+    
     const property = await prisma.property.update({
       where: { id: params.id },
       data: body,

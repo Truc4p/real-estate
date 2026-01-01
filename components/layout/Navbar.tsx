@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Home, Heart, User, Menu, X, Map } from 'lucide-react'
+import { Home, Heart, User, Menu, X, Map, Bell, Save, Calculator } from 'lucide-react'
 import { useState } from 'react'
 
 export default function Navbar() {
@@ -29,10 +29,20 @@ export default function Navbar() {
               <Map className="w-4 h-4" />
               Map Search
             </Link>
+            <Link href="/calculators" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-1">
+              <Calculator className="w-4 h-4" />
+              Calculators
+            </Link>
             <Link href="/agents" className="text-gray-700 hover:text-primary-600 font-medium">
               Find Agents
             </Link>
-            <Link href="/favorites" className="text-gray-700 hover:text-primary-600">
+            <Link href="/saved-searches" className="text-gray-700 hover:text-primary-600" title="Saved Searches">
+              <Save className="w-5 h-5" />
+            </Link>
+            <Link href="/alerts" className="text-gray-700 hover:text-primary-600" title="Alerts">
+              <Bell className="w-5 h-5" />
+            </Link>
+            <Link href="/favorites" className="text-gray-700 hover:text-primary-600" title="Favorites">
               <Heart className="w-5 h-5" />
             </Link>
             <Link href="/auth/signin" className="text-gray-700 hover:text-primary-600">
@@ -69,8 +79,20 @@ export default function Navbar() {
                 <Map className="w-4 h-4" />
                 Map Search
               </Link>
+              <Link href="/calculators" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-2">
+                <Calculator className="w-4 h-4" />
+                Calculators
+              </Link>
               <Link href="/agents" className="text-gray-700 hover:text-primary-600 font-medium">
                 Find Agents
+              </Link>
+              <Link href="/saved-searches" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-2">
+                <Save className="w-4 h-4" />
+                Saved Searches
+              </Link>
+              <Link href="/alerts" className="text-gray-700 hover:text-primary-600 font-medium flex items-center gap-2">
+                <Bell className="w-4 h-4" />
+                Alerts
               </Link>
               <Link href="/favorites" className="text-gray-700 hover:text-primary-600 font-medium">
                 Favorites

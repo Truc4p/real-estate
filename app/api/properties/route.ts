@@ -4,6 +4,34 @@ import { prisma } from '@/lib/prisma'
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
+    
+    // Check if fetching by specific IDs (for recently viewed, favorites, etc.)
+    const ids = searchParams.get('ids')
+    if (ids) {
+      const idArray = ids.split(',').filter(Boolean)
+      const properties = await prisma.property.findMany({
+        where: {
+          id: { in: idArray },
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+              role: true,
+            },
+          },
+        },
+      })
+      // Sort by the order of IDs provided
+      const sortedProperties = idArray
+        .map((id) => properties.find((p) => p.id === id))
+        .filter(Boolean)
+      return NextResponse.json({ properties: sortedProperties })
+    }
+    
     const city = searchParams.get('city')
     const state = searchParams.get('state')
     const minPrice = searchParams.get('minPrice')
@@ -19,6 +47,11 @@ export async function GET(request: Request) {
     const hasOpenHouse = searchParams.get('hasOpenHouse')
     const priceReduced = searchParams.get('priceReduced')
     const hasVirtualTour = searchParams.get('hasVirtualTour')
+    
+    // Pagination
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '12')
+    const skip = (page - 1) * limit
 
     const where: any = {
       status: 'ACTIVE',
@@ -79,6 +112,9 @@ export async function GET(request: Request) {
       }
     }
 
+    // Get total count for pagination
+    const total = await prisma.property.count({ where })
+
     const properties = await prisma.property.findMany({
       where,
       include: {
@@ -95,10 +131,20 @@ export async function GET(request: Request) {
       orderBy: {
         createdAt: 'desc',
       },
-      take: 50,
+      skip,
+      take: limit,
     })
 
-    return NextResponse.json(properties)
+    return NextResponse.json({
+      properties,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: page < Math.ceil(total / limit),
+      },
+    })
   } catch (error) {
     console.error('Error fetching properties:', error)
     return NextResponse.json(

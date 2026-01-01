@@ -130,16 +130,78 @@ model Favorite {
 }
 
 model SavedSearch {
-  id          String   @id @default(cuid())
-  name        String
-  filters     Json
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(cuid())
+  name                String
+  filters             Json     // Search filters (price, bedrooms, location, etc.)
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  // Alert preferences
+  emailAlerts         Boolean  @default(true)
+  alertFrequency      AlertFrequency @default(INSTANT) // How often to send alerts
+  notifyNewMatches    Boolean  @default(true)
+  notifyPriceDrops    Boolean  @default(true)
+  notifyStatusChanges Boolean  @default(true)
+  
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  alerts              Alert[]
+  lastChecked         DateTime @default(now())
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
   
   @@map("saved_searches")
+}
+
+model Alert {
+  id             String      @id @default(cuid())
+  type           AlertType
+  propertyId     String
+  savedSearchId  String?
+  
+  // Alert details
+  title          String
+  message        String
+  metadata       Json?       // Additional data (old price, new price, etc.)
+  
+  // Delivery status
+  sent           Boolean     @default(false)
+  sentAt         DateTime?
+  read           Boolean     @default(false)
+  readAt         DateTime?
+  
+  savedSearch    SavedSearch? @relation(fields: [savedSearchId], references: [id], onDelete: Cascade)
+  
+  createdAt      DateTime    @default(now())
+  
+  @@index([savedSearchId])
+  @@index([sent])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+model PriceHistory {
+  id         String   @id @default(cuid())
+  propertyId String
+  oldPrice   Float
+  newPrice   Float
+  changedAt  DateTime @default(now())
+  
+  @@index([propertyId])
+  @@index([changedAt])
+  @@map("price_history")
+}
+
+model StatusHistory {
+  id         String         @id @default(cuid())
+  propertyId String
+  oldStatus  PropertyStatus
+  newStatus  PropertyStatus
+  changedAt  DateTime       @default(now())
+  
+  @@index([propertyId])
+  @@index([changedAt])
+  @@map("status_history")
 }
 
 enum UserRole {
@@ -176,4 +238,17 @@ enum ParkingType {
   NONE
   COVERED
   CARPORT
+}
+
+enum AlertType {
+  NEW_MATCH
+  PRICE_DROP
+  STATUS_CHANGE
+  BACK_ON_MARKET
+}
+
+enum AlertFrequency {
+  INSTANT
+  DAILY
+  WEEKLY
 }
