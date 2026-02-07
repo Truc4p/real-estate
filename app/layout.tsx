@@ -8,8 +8,8 @@ import ComparisonBar from '@/components/properties/ComparisonBar'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Real Estate - Find Your Dream Home',
-  description: 'Search and discover your perfect property with advanced search and map features',
+  title: 'HomeFinder Pro - Your Smart Real Estate Search Companion',
+  description: 'Discover your dream property with HomeFinder Pro. Advanced search, interactive maps, real-time alerts, price history charts, neighborhood insights, and financial calculators.',
 }
 
 export default function RootLayout({

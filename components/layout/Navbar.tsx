@@ -14,7 +14,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 text-primary-600 font-bold text-xl">
             <Home className="w-6 h-6" />
-            <span>RealEstate</span>
+            <span>HomeFinder Pro</span>
           </Link>
 
           {/* Desktop Navigation */}

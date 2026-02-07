@@ -1,6 +1,7 @@
 {
-  "name": "real-estate-website",
+  "name": "homefinder-pro",
   "version": "1.0.0",
+  "description": "A cutting-edge real estate platform with smart search, interactive maps, real-time alerts, and property intelligence",
   "private": true,
   "scripts": {
     "dev": "next dev",

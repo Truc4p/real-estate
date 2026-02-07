@@ -1,16 +1,46 @@
-# Real Estate Website
+# 🏡 HomeFinder Pro
 
-A modern, professional real estate website built with Next.js 14, TypeScript, and cutting-edge web technologies. Search, discover, and explore properties with advanced filtering and interactive map features.
+**Your Smart Real Estate Search Companion**
 
-## Features
+HomeFinder Pro is a cutting-edge real estate platform designed to revolutionize how people discover their dream properties. Built with modern web technologies, it combines powerful search capabilities, interactive maps, real-time alerts, and comprehensive property insights to deliver an exceptional user experience for buyers, renters, and real estate professionals.
 
-- 🏠 **Property Listings** - Browse thousands of properties for sale and rent
-- 🔍 **Advanced Search** - Filter by location, price, property type, bedrooms, and more
-- 🗺️ **Interactive Maps** - Explore properties on an interactive Mapbox map
-- ❤️ **Favorites** - Save and track your favorite properties
-- 👤 **User Accounts** - Sign up, sign in, and manage your listings
-- 📱 **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- ⚡ **Fast Performance** - Built with Next.js 14 for optimal speed and SEO
+## ✨ Key Features
+
+### 🔍 Smart Property Search
+- **Advanced Filtering** - Search by location, price range, property type, bedrooms, bathrooms, and more
+- **Saved Searches** - Save your search criteria and get notified of new matches
+- **Price Alerts** - Receive instant notifications when properties match your budget
+- **Recently Viewed** - Track properties you've explored with automatic history
+
+### 🗺️ Interactive Map Experience
+- **Mapbox Integration** - Explore properties on a beautiful, responsive map interface
+- **Draw Custom Boundaries** - Define your ideal neighborhood with custom search areas
+- **Cluster Visualization** - See property density at a glance with intelligent clustering
+- **Real-time Updates** - Properties update dynamically as you pan and zoom
+
+### 📊 Property Intelligence
+- **Price History Charts** - Visualize pricing trends over time
+- **Neighborhood Insights** - Access walk scores, transit scores, and local amenities
+- **Market Comparisons** - Compare similar properties side-by-side
+- **Financial Calculators** - Estimate mortgage payments, affordability, and ROI
+
+### 🔔 Real-Time Alerts System
+- **New Listings** - Be first to know when properties hit the market
+- **Price Drops** - Get notified when prices are reduced
+- **Status Changes** - Track when properties go pending or back on market
+- **Custom Preferences** - Set your own alert frequency (instant, daily, weekly)
+
+### ❤️ Personalization Features
+- **Favorites Collection** - Save and organize properties you love
+- **Property Comparison** - Compare up to 4 properties at once
+- **Quick View Modal** - Preview property details without leaving the search page
+- **User Dashboard** - Manage your listings, favorites, and alerts in one place
+
+### 📱 Modern User Experience
+- **Responsive Design** - Seamless experience on desktop, tablet, and mobile devices
+- **Fast Loading** - Optimized performance with Next.js 14 App Router
+- **SEO Optimized** - Better visibility in search engines
+- **Accessible** - WCAG compliant design for all users
 
 ## Tech Stack
 
@@ -195,10 +225,21 @@ Consider using:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## About HomeFinder Pro
+
+HomeFinder Pro was built to address the challenges of modern property search by combining powerful technology with user-centric design. Whether you're a first-time homebuyer, seasoned investor, or real estate professional, HomeFinder Pro provides the tools and insights you need to make informed real estate decisions.
+
+**Mission:** To make property discovery effortless, transparent, and empowering for everyone.
+
+**Vision:** To become the most trusted and intelligent real estate platform, connecting people with their perfect properties through innovative technology.
+
 ## License
 
 This project is licensed under the MIT License.
 
 ## Support
 
-For support, email support@realestate.com or open an issue in the repository.
+For support, questions, or feedback:
+- 📧 Email: support@homefinderpro.com
+- 🐛 Issues: Open an issue in the repository
+- 💬 Discussions: Join our community discussions
