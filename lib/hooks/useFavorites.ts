@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Property } from '@/types'
 
 export function useFavorites() {
@@ -27,7 +27,7 @@ export function useFavorites() {
     }
   }, [favorites, isLoaded])
 
-  const toggleFavorite = (propertyId: string) => {
+  const toggleFavorite = useCallback((propertyId: string) => {
     setFavorites((prev) => {
       if (prev.includes(propertyId)) {
         return prev.filter((id) => id !== propertyId)
@@ -35,25 +35,28 @@ export function useFavorites() {
         return [...prev, propertyId]
       }
     })
-  }
+  }, [])
 
-  const isFavorite = (propertyId: string) => {
+  const isFavorite = useCallback((propertyId: string) => {
     return favorites.includes(propertyId)
-  }
+  }, [favorites])
 
-  const addFavorite = (propertyId: string) => {
-    if (!favorites.includes(propertyId)) {
-      setFavorites((prev) => [...prev, propertyId])
-    }
-  }
+  const addFavorite = useCallback((propertyId: string) => {
+    setFavorites((prev) => {
+      if (!prev.includes(propertyId)) {
+        return [...prev, propertyId]
+      }
+      return prev
+    })
+  }, [])
 
-  const removeFavorite = (propertyId: string) => {
+  const removeFavorite = useCallback((propertyId: string) => {
     setFavorites((prev) => prev.filter((id) => id !== propertyId))
-  }
+  }, [])
 
-  const clearFavorites = () => {
+  const clearFavorites = useCallback(() => {
     setFavorites([])
-  }
+  }, [])
 
   return {
     favorites,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Property } from '@/types'
 
 interface RecentProperty {
@@ -34,7 +34,7 @@ export function useRecentlyViewed() {
     }
   }, [recentProperties, isLoaded])
 
-  const addRecentProperty = (propertyId: string) => {
+  const addRecentProperty = useCallback((propertyId: string) => {
     setRecentProperties((prev) => {
       // Remove if already exists
       const filtered = prev.filter((p) => p.id !== propertyId)
@@ -45,15 +45,15 @@ export function useRecentlyViewed() {
       // Keep only MAX_RECENT items
       return updated.slice(0, MAX_RECENT)
     })
-  }
+  }, [])
 
-  const clearRecentProperties = () => {
+  const clearRecentProperties = useCallback(() => {
     setRecentProperties([])
-  }
+  }, [])
 
-  const getRecentPropertyIds = () => {
+  const getRecentPropertyIds = useCallback(() => {
     return recentProperties.map((p) => p.id)
-  }
+  }, [recentProperties])
 
   return {
     recentProperties,

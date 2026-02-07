@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -37,13 +37,24 @@ interface PriceHistoryChartProps {
   createdAt: Date
 }
 
+// Simple seeded random number generator for consistent results
+function seededRandom(seed: number): () => number {
+  let state = seed
+  return () => {
+    state = (state * 1103515245 + 12345) & 0x7fffffff
+    return state / 0x7fffffff
+  }
+}
+
 // Generate mock price history data based on property details
 function generatePriceHistory(
   currentPrice: number, 
   originalPrice: number | undefined,
   priceReduced: boolean,
-  createdAt: Date
+  createdAt: Date,
+  seed: number
 ): PriceHistoryEntry[] {
+  const random = seededRandom(seed)
   const history: PriceHistoryEntry[] = []
   const now = new Date()
   const listingDate = new Date(createdAt)
@@ -59,7 +70,7 @@ function generatePriceHistory(
   // If price was reduced, add the reduction event
   if (priceReduced && originalPrice && originalPrice > currentPrice) {
     const reductionDate = new Date(listingDate)
-    reductionDate.setDate(reductionDate.getDate() + Math.floor(Math.random() * 30) + 14)
+    reductionDate.setDate(reductionDate.getDate() + Math.floor(random() * 30) + 14)
     
     if (reductionDate < now) {
       history.push({
@@ -77,8 +88,10 @@ function generatePriceHistory(
 function generateMarketTrends(
   currentPrice: number, 
   bedrooms: number,
-  listingType: 'FOR_SALE' | 'FOR_RENT'
+  listingType: 'FOR_SALE' | 'FOR_RENT',
+  seed: number
 ): MarketTrend[] {
+  const random = seededRandom(seed)
   const isRental = listingType === 'FOR_RENT'
   const baseVariance = isRental ? 0.03 : 0.05 // Rentals have less variance
   
@@ -91,9 +104,9 @@ function generateMarketTrends(
     const monthName = date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })
     
     // Simulate market trends with some randomness but overall upward trend
-    const monthlyVariance = (Math.random() - 0.3) * baseVariance // Slight upward bias
+    const monthlyVariance = (random() - 0.3) * baseVariance // Slight upward bias
     const trendMultiplier = 1 + (5 - i) * 0.008 + monthlyVariance
-    const avgPrice = Math.round(currentPrice * trendMultiplier * (0.95 + Math.random() * 0.1))
+    const avgPrice = Math.round(currentPrice * trendMultiplier * (0.95 + random() * 0.1))
     
     const prevPrice = trends.length > 0 ? trends[trends.length - 1].avgPrice : avgPrice
     const percentChange = ((avgPrice - prevPrice) / prevPrice) * 100
@@ -121,19 +134,35 @@ export default function PriceHistoryChart({
 }: PriceHistoryChartProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const [activeView, setActiveView] = useState<'history' | 'market'>('market')
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Only run on client to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const isRental = listingType === 'FOR_RENT'
+  
+  // Create a deterministic seed from propertyId
+  const seed = useMemo(() => {
+    let hash = 0
+    for (let i = 0; i < propertyId.length; i++) {
+      hash = ((hash << 5) - hash) + propertyId.charCodeAt(i)
+      hash |= 0
+    }
+    return Math.abs(hash)
+  }, [propertyId])
 
   // Generate price history
   const priceHistory = useMemo(() => 
-    generatePriceHistory(currentPrice, originalPrice, priceReduced, createdAt),
-    [currentPrice, originalPrice, priceReduced, createdAt]
+    generatePriceHistory(currentPrice, originalPrice, priceReduced, createdAt, seed),
+    [currentPrice, originalPrice, priceReduced, createdAt, seed]
   )
 
   // Generate market trends
   const marketTrends = useMemo(() => 
-    generateMarketTrends(currentPrice, bedrooms, listingType),
-    [currentPrice, bedrooms, listingType]
+    generateMarketTrends(currentPrice, bedrooms, listingType, seed + 1),
+    [currentPrice, bedrooms, listingType, seed]
   )
 
   // Calculate overall market change

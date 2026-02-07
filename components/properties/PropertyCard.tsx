@@ -18,9 +18,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const [showQuickView, setShowQuickView] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const { addProperty, removeProperty, isSelected } = useComparison()
-  const { toggleFavorite, isFavorite } = useFavorites()
+  const { toggleFavorite, isFavorite, isLoaded } = useFavorites()
   const isCompareSelected = isSelected(property.id)
-  const favorite = isFavorite(property.id)
+  const favorite = isLoaded ? isFavorite(property.id) : false
   const mainImage = property.images[0] || 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800'
 
   const handleCompareToggle = (e: React.ChangeEvent<HTMLInputElement>) => {

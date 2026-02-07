@@ -42,9 +42,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   const [neighborhoodData, setNeighborhoodData] = useState<NeighborhoodData | null>(null)
   const [loadingNeighborhood, setLoadingNeighborhood] = useState(true)
 
-  const { toggleFavorite, isFavorite } = useFavorites()
+  const { toggleFavorite, isFavorite, isLoaded: favoritesLoaded } = useFavorites()
   const { addRecentProperty } = useRecentlyViewed()
-  const favorite = isFavorite(property.id)
+  const favorite = favoritesLoaded ? isFavorite(property.id) : false
 
   const images = property.images.length > 0 
     ? property.images 
