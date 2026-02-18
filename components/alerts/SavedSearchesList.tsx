@@ -92,7 +92,7 @@ export default function SavedSearchesList() {
     <div className="max-w-6xl mx-auto p-6">
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <Save className="h-8 w-8 text-blue-600" />
+          <Save className="h-8 w-8 text-primary-600" />
           <h1 className="text-3xl font-bold">Saved Searches</h1>
         </div>
         <p className="text-gray-600">
@@ -102,7 +102,7 @@ export default function SavedSearchesList() {
 
       {loading ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
           <p className="text-gray-600 mt-4">Loading saved searches...</p>
         </div>
       ) : searches.length === 0 ? (
@@ -116,7 +116,7 @@ export default function SavedSearchesList() {
           </p>
           <a
             href="/properties"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            className="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium"
           >
             Search Properties
           </a>

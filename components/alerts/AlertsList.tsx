@@ -133,7 +133,7 @@ export default function AlertsList() {
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Bell className="h-8 w-8 text-blue-600" />
+            <Bell className="h-8 w-8 text-primary-600" />
             <h1 className="text-3xl font-bold">Alerts & Notifications</h1>
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-sm px-3 py-1 rounded-full">
@@ -144,7 +144,7 @@ export default function AlertsList() {
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700"
             >
               <Check className="h-4 w-4" />
               Mark all as read
@@ -157,7 +157,7 @@ export default function AlertsList() {
             onClick={() => setFilter('all')}
             className={`px-4 py-2 rounded-lg font-medium ${
               filter === 'all'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
@@ -167,7 +167,7 @@ export default function AlertsList() {
             onClick={() => setFilter('unread')}
             className={`px-4 py-2 rounded-lg font-medium ${
               filter === 'unread'
-                ? 'bg-blue-600 text-white'
+                ? 'bg-primary-600 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >

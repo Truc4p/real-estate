@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function GET(
   request: Request,
@@ -44,9 +46,18 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please sign in' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     
-    // Get the current property to track changes
+    // Get the current property to track changes and check ownership
     const currentProperty = await prisma.property.findUnique({
       where: { id: params.id },
     });
@@ -56,6 +67,26 @@ export async function PUT(
         { error: 'Property not found' },
         { status: 404 }
       );
+    }
+
+    // Check if user owns this property (or is admin)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { email: true, role: true },
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
+    if (currentProperty.userEmail !== user.email && user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Forbidden - You can only edit your own properties' },
+        { status: 403 }
+      )
     }
 
     // Track price changes
@@ -100,6 +131,51 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please sign in' },
+        { status: 401 }
+      )
+    }
+
+    // Get the property to check ownership
+    const property = await prisma.property.findUnique({
+      where: { id: params.id },
+      select: {
+        userEmail: true,
+      },
+    })
+
+    if (!property) {
+      return NextResponse.json(
+        { error: 'Property not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check if user owns this property (or is admin)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: { email: true, role: true },
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
+    if (property.userEmail !== user.email && user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Forbidden - You can only delete your own properties' },
+        { status: 403 }
+      )
+    }
+
+    // Delete the property
     await prisma.property.delete({
       where: { id: params.id },
     })

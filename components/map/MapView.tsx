@@ -88,7 +88,7 @@ export default function MapView({
   const markersRef = useRef<mapboxgl.Marker[]>([])
   const [isMounted, setIsMounted] = useState(false)
   const [showLayerPanel, setShowLayerPanel] = useState(false)
-  const [showStreetView, setShowStreetView] = useState(false)
+  const [showStreetView, setShowStreetView] = useState(true)
   const [streetViewCoords, setStreetViewCoords] = useState<[number, number]>([longitude, latitude])
   const [layers, setLayers] = useState<Layer[]>([
     { id: 'schools', name: 'Schools', enabled: false, icon: '🏫' },
@@ -791,37 +791,64 @@ export default function MapView({
         </div>
       )}
 
-      {/* Street View Panel - Using Mapbox Street View */}
+      {/* Street View Panel */}
       {showStreetView && (
-        <div className="absolute bottom-4 right-4 w-96 h-64 bg-white rounded-lg shadow-2xl overflow-hidden z-20">
-          <div className="absolute top-2 right-2 z-10">
+        <div className="absolute inset-4 md:top-4 md:bottom-4 md:right-4 md:left-auto md:w-[700px] md:h-[600px] bg-white rounded-lg shadow-2xl overflow-hidden z-20">
+          <div className="absolute top-3 right-3 z-10">
             <button
               onClick={() => setShowStreetView(false)}
-              className="bg-black/50 text-white rounded-full p-1 hover:bg-black/70 transition-colors"
+              className="bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors shadow-lg"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <div className="text-center p-4">
-              <svg className="w-12 h-12 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              <p className="text-sm text-gray-600">Street View at</p>
-              <p className="text-xs text-gray-500 font-mono mt-1">
-                {streetViewCoords[1].toFixed(6)}, {streetViewCoords[0].toFixed(6)}
-              </p>
-              <a
-                href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${streetViewCoords[1]},${streetViewCoords[0]}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-block bg-primary-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-primary-700 transition-colors"
-              >
-                Open in Google Maps
-              </a>
-            </div>
+          <div className="w-full h-full">
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+              // Google Street View (requires API key)
+              <iframe
+                src={`https://www.google.com/maps/embed/v1/streetview?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&location=${streetViewCoords[1]},${streetViewCoords[0]}&heading=0&pitch=0&fov=90`}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            ) : (
+              // Fallback: Mapbox static satellite image
+              <div className="w-full h-full relative">
+                <img
+                  src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/${streetViewCoords[0]},${streetViewCoords[1]},17,0/700x600@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
+                  alt="Street View"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent pt-20 pb-6 px-6">
+                  <div className="text-center">
+                    <svg className="w-10 h-10 mx-auto mb-2 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-sm text-white/90 mb-3">
+                      Street View requires Google Maps API key
+                    </p>
+                    <a
+                      href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${streetViewCoords[1]},${streetViewCoords[0]}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors shadow-lg"
+                    >
+                      Open in Google Maps →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 pointer-events-none">
+            <p className="text-xs text-white/90 font-mono">
+              {streetViewCoords[1].toFixed(6)}, {streetViewCoords[0].toFixed(6)}
+            </p>
           </div>
         </div>
       )}
