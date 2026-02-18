@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, BellOff, Check, Trash2, X } from 'lucide-react';
 
 interface Alert {
@@ -122,7 +122,7 @@ export default function AlertsList() {
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     fetchAlerts();
   }, [filter]);
 
@@ -134,7 +134,7 @@ export default function AlertsList() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Bell className="h-8 w-8 text-primary-600" />
-            <h1 className="text-3xl font-bold">Alerts & Notifications</h1>
+            <h2 className="text-3xl font-bold">Alerts & Notifications</h2>
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-sm px-3 py-1 rounded-full">
                 {unreadCount} new
