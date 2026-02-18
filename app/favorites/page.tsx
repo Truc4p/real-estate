@@ -19,7 +19,7 @@ async function fetchPropertiesByIds(ids: string[]): Promise<Property[]> {
 export default function FavoritesPage() {
   const { favorites, clearFavorites, isLoaded } = useFavorites()
 
-  const { data: properties, isLoading } = useQuery({
+  const { data: properties, isLoading, error } = useQuery({
     queryKey: ['favoriteProperties', favorites],
     queryFn: () => fetchPropertiesByIds(favorites),
     enabled: isLoaded && favorites.length > 0,
@@ -54,6 +54,12 @@ export default function FavoritesPage() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4">
+            Error loading properties: {(error as Error).message}
+          </div>
+        )}
+        
         {!isLoaded || isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -74,11 +80,15 @@ export default function FavoritesPage() {
               Browse Properties
             </Link>
           </div>
-        ) : (
+        ) : properties && properties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {properties?.map((property) => (
+            {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-gray-400 mb-4">No properties found</div>
           </div>
         )}
       </div>
