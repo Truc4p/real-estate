@@ -51,9 +51,9 @@ export default function ProfileClient({ session }: ProfileClientProps) {
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-8 text-white">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8 text-white">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-white text-blue-600 flex items-center justify-center text-3xl font-bold">
+              <div className="w-20 h-20 rounded-full bg-white text-primary-600 flex items-center justify-center text-3xl font-bold">
                 {session.user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div>
@@ -82,7 +82,7 @@ export default function ProfileClient({ session }: ProfileClientProps) {
               {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
                 >
                   <Edit2 className="w-4 h-4" />
                   Edit Profile
