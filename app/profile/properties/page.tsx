@@ -11,11 +11,16 @@ export default async function MyPropertiesPage() {
     redirect('/auth/signin')
   }
 
+  const userEmail = session.user.email
+  if (!userEmail) {
+    redirect('/auth/signin')
+  }
+
   // Fetch user's properties
   const properties = await prisma.property.findMany({
     where: {
       user: {
-        email: session.user.email,
+        email: userEmail,
       },
     },
     orderBy: {
