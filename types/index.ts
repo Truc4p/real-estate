@@ -27,18 +27,18 @@ export interface Property {
   images: string[]
   features: string[]
   yearBuilt: number
-  virtualTourUrl?: string
+  virtualTourUrl?: string | null
   floorPlans: string[]
   // Advanced filters
-  parking?: ParkingType
+  parking?: ParkingType | null
   amenities: string[]
-  moveInDate?: Date
-  leaseTerm?: number
-  incomeRequirement?: number
-  creditRequirement?: number
-  openHouseDate?: Date
+  moveInDate?: Date | null
+  leaseTerm?: number | null
+  incomeRequirement?: number | null
+  creditRequirement?: number | null
+  openHouseDate?: Date | null
   priceReduced: boolean
-  originalPrice?: number
+  originalPrice?: number | null
   createdAt: Date
   updatedAt: Date
   userId: string
