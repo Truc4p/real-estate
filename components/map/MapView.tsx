@@ -170,7 +170,7 @@ export default function MapView({
       
       map.current.on('data', (e) => {
         if (e.dataType === 'style') {
-          console.log('[MapView] Style data event:', e.isSourceLoaded)
+          console.log('[MapView] Style data event:', (e as any).isSourceLoaded)
         }
       })
       
