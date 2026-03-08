@@ -202,10 +202,11 @@ export async function POST(
       property.zipCode
     )
 
+    const { propertyId: _pid2, ...updateData2 } = newData as any
     const neighborhoodData = await prisma.neighborhoodData.upsert({
       where: { propertyId },
       update: {
-        ...newData,
+        ...updateData2,
         updatedAt: new Date()
       },
       create: {
