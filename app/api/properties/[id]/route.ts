@@ -72,7 +72,7 @@ export async function PUT(
     // Check if user owns this property (or is admin)
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { email: true, role: true },
+      select: { id: true, email: true, role: true },
     })
 
     if (!user) {
@@ -82,7 +82,7 @@ export async function PUT(
       )
     }
 
-    if (currentProperty.userEmail !== user.email && user.role !== 'ADMIN') {
+    if (currentProperty.userId !== user.id && user.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - You can only edit your own properties' },
         { status: 403 }
@@ -144,7 +144,7 @@ export async function DELETE(
     const property = await prisma.property.findUnique({
       where: { id: params.id },
       select: {
-        userEmail: true,
+        userId: true,
       },
     })
 
@@ -158,7 +158,7 @@ export async function DELETE(
     // Check if user owns this property (or is admin)
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { email: true, role: true },
+      select: { id: true, email: true, role: true },
     })
 
     if (!user) {
@@ -168,7 +168,7 @@ export async function DELETE(
       )
     }
 
-    if (property.userEmail !== user.email && user.role !== 'ADMIN') {
+    if (property.userId !== user.id && user.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Forbidden - You can only delete your own properties' },
         { status: 403 }
