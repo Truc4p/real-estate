@@ -144,10 +144,11 @@ export async function GET(
       )
 
       // Upsert the data
+      const { propertyId: _pid, ...updateData } = newData as any
       neighborhoodData = await prisma.neighborhoodData.upsert({
         where: { propertyId },
         update: {
-          ...newData,
+          ...updateData,
           updatedAt: new Date()
         },
         create: {
