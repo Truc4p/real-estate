@@ -110,7 +110,7 @@ export default function PropertyList() {
 
       {!hasNextPage && allProperties.length > 0 && (
         <div className="text-center py-8 text-gray-500">
-          You've reached the end of the listings
+          You&apos;ve reached the end of the listings
         </div>
       )}
     </div>

@@ -188,7 +188,7 @@ export default function AlertsList() {
             No alerts yet
           </h3>
           <p className="text-gray-600">
-            When properties match your saved searches, you'll see alerts here.
+            When properties match your saved searches, you&apos;ll see alerts here.
           </p>
         </div>
       ) : (
