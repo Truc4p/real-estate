@@ -15,8 +15,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Resend setup (modern alternative)
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Resend setup (modern alternative) - lazily initialized inside sendEmail
 
 interface EmailOptions {
   to: string;
@@ -28,6 +27,7 @@ interface EmailOptions {
 export async function sendEmail({ to, subject, html, text }: EmailOptions) {
   try {
     if (EMAIL_PROVIDER === 'resend' && process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
       const result = await resend.emails.send({
         from: process.env.EMAIL_FROM || 'noreply@realestate.com',
         to,
