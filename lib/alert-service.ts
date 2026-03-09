@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { sendEmail, emailTemplates } from '@/lib/email';
 import { Property, SavedSearch, AlertType } from '@prisma/client';
 
