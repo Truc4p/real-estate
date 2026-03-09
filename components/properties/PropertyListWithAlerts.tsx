@@ -4,37 +4,7 @@ import { useState, useMemo } from 'react';
 import PropertyCard from './PropertyCard';
 import SaveSearchModal from '@/components/alerts/SaveSearchModal';
 import { Save, Bell } from 'lucide-react';
-
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  latitude: number;
-  longitude: number;
-  bedrooms: number;
-  bathrooms: number;
-  squareFeet: number;
-  propertyType: string;
-  listingType: string;
-  status: string;
-  images: string[];
-  features: string[];
-  yearBuilt: number;
-  priceReduced?: boolean;
-  user?: {
-    id: string;
-    name: string | null;
-    email: string;
-    phone: string | null;
-    role: string;
-    image: string | null;
-  };
-}
+import { Property } from '@/types';
 
 interface PropertyListWithAlertsProps {
   properties: Property[];
