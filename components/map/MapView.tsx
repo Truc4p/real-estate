@@ -179,8 +179,8 @@ export default function MapView({
         console.error('[MapView] Error details:', {
           error: e.error,
           message: e.error?.message,
-          status: e.error?.status,
-          url: e.error?.url
+          status: (e.error as any)?.status,
+          url: (e.error as any)?.url
         })
         
         // Try to provide helpful error message
@@ -315,6 +315,7 @@ export default function MapView({
       markersRef.current.forEach(marker => marker.remove())
       map.current?.remove()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted])
 
   // Update property markers when properties change
@@ -574,6 +575,7 @@ export default function MapView({
         map.current.off('load', addPropertiesToMap)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [properties])
 
   // Toggle layers
@@ -819,6 +821,7 @@ export default function MapView({
             ) : (
               // Fallback: Mapbox static satellite image
               <div className="w-full h-full relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/${streetViewCoords[0]},${streetViewCoords[1]},17,0/700x600@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`}
                   alt="Street View"
