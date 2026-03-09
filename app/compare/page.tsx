@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { Property } from '@/types'
 import { formatPrice, formatNumber } from '@/lib/utils'
@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { ArrowLeft, Bed, Bath, Square, MapPin, Calendar, DollarSign, Home, Check, X } from 'lucide-react'
 import PriceComparisonChart from '@/components/properties/PriceComparisonChart'
 
-export default function ComparePage() {
+function CompareContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [properties, setProperties] = useState<Property[]>([])
@@ -243,5 +243,13 @@ export default function ComparePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+      <CompareContent />
+    </Suspense>
   )
 }
