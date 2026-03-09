@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import InteractiveMapSearch from '@/components/map/InteractiveMapSearch'
 
+export const dynamic = 'force-dynamic'
+
 async function getProperties() {
   const properties = await prisma.property.findMany({
     where: {

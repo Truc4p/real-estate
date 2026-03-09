@@ -4,6 +4,8 @@ import SearchFilters from '@/components/search/SearchFilters'
 import MapView from '@/components/map/MapView'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 async function getProperties() {
   const properties = await prisma.property.findMany({
     where: {

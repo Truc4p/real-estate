@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import Image from 'next/image'
+
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import { Mail, Phone, MapPin, Home } from 'lucide-react'
 
