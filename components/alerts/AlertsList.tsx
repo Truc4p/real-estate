@@ -124,6 +124,7 @@ export default function AlertsList() {
 
   useEffect(() => {
     fetchAlerts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const unreadCount = alerts.filter(a => !a.read).length;

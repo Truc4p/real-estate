@@ -363,10 +363,10 @@ export default function MapView({
               image: property.images?.[0],
               listingType: property.listingType
             }
-          }))
+          }));
           console.log('[MapView] Created', features.length, 'features from properties')
           
-          (map.current.getSource('properties') as mapboxgl.GeoJSONSource).setData({
+          ;(map.current.getSource('properties') as mapboxgl.GeoJSONSource).setData({
             type: 'FeatureCollection',
             features
           })
