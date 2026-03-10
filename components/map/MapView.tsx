@@ -88,7 +88,7 @@ export default function MapView({
   const markersRef = useRef<mapboxgl.Marker[]>([])
   const [isMounted, setIsMounted] = useState(false)
   const [showLayerPanel, setShowLayerPanel] = useState(false)
-  const [showStreetView, setShowStreetView] = useState(true)
+  const [showStreetView, setShowStreetView] = useState(false)
   const [streetViewCoords, setStreetViewCoords] = useState<[number, number]>([longitude, latitude])
   const [layers, setLayers] = useState<Layer[]>([
     { id: 'schools', name: 'Schools', enabled: false, icon: '🏫' },
