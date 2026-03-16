@@ -36,6 +36,8 @@ export async function GET(request: Request) {
     const state = searchParams.get('state')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
+    const bedrooms = searchParams.get('bedrooms')
+    const bathrooms = searchParams.get('bathrooms')
     const propertyType = searchParams.get('propertyType')
     const listingType = searchParams.get('listingType')
     const parking = searchParams.get('parking')
@@ -47,6 +49,7 @@ export async function GET(request: Request) {
     const hasOpenHouse = searchParams.get('hasOpenHouse')
     const priceReduced = searchParams.get('priceReduced')
     const hasVirtualTour = searchParams.get('hasVirtualTour')
+    const locationParam = searchParams.get('location')
     
     // Pagination
     const page = parseInt(searchParams.get('page') || '1')
@@ -57,10 +60,26 @@ export async function GET(request: Request) {
       status: 'ACTIVE',
     }
 
+    if (locationParam) {
+      where.OR = [
+        { city: { contains: locationParam, mode: 'insensitive' } },
+        { state: { contains: locationParam, mode: 'insensitive' } },
+        { zipCode: { contains: locationParam, mode: 'insensitive' } },
+      ]
+    }
+
     if (city) where.city = { contains: city, mode: 'insensitive' }
     if (state) where.state = { contains: state, mode: 'insensitive' }
-    if (minPrice) where.price = { ...where.price, gte: parseFloat(minPrice) }
-    if (maxPrice) where.price = { ...where.price, lte: parseFloat(maxPrice) }
+    
+    if (minPrice || maxPrice) {
+      where.price = {}
+      if (minPrice) where.price.gte = parseFloat(minPrice)
+      if (maxPrice) where.price.lte = parseFloat(maxPrice)
+    }
+
+    if (bedrooms) where.bedrooms = { gte: parseInt(bedrooms) }
+    if (bathrooms) where.bathrooms = { gte: parseInt(bathrooms) }
+
     if (propertyType) where.propertyType = propertyType
     if (listingType) where.listingType = listingType
 

@@ -47,7 +47,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       <div className="group block bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
         {/* Image */}
         <div className="relative h-56 bg-gray-200 overflow-hidden">
-          <Link href={`/properties/${property.id}`}>
+          <Link href={`/properties/${property.id}`} className="block w-full h-full relative">
             <Image
               src={mainImage}
               alt={property.title}

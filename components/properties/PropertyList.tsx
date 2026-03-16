@@ -5,6 +5,7 @@ import PropertyCard from './PropertyCard'
 import PropertyCardSkeleton from '@/components/skeletons/PropertyCardSkeleton'
 import { Property } from '@/types'
 import { useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 interface PropertiesResponse {
   properties: Property[]
@@ -17,14 +18,17 @@ interface PropertiesResponse {
   }
 }
 
-async function fetchProperties({ pageParam = 1 }: { pageParam?: number }): Promise<PropertiesResponse> {
-  const res = await fetch(`/api/properties?page=${pageParam}&limit=12`)
+async function fetchProperties({ pageParam = 1, queryKey }: any): Promise<PropertiesResponse> {
+  const [_key, searchParamsStr] = queryKey;
+  const res = await fetch(`/api/properties?page=${pageParam}&limit=12${searchParamsStr ? `&${searchParamsStr}` : ''}`)
   if (!res.ok) throw new Error('Failed to fetch properties')
   return res.json()
 }
 
 export default function PropertyList() {
   const observerRef = useRef<HTMLDivElement>(null)
+  const searchParams = useSearchParams()
+  const searchParamsStr = searchParams.toString()
   
   const {
     data,
@@ -34,7 +38,7 @@ export default function PropertyList() {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['properties'],
+    queryKey: ['properties', searchParamsStr],
     queryFn: fetchProperties,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

@@ -6,11 +6,85 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-async function getProperties() {
+async function getProperties(searchParams: { [key: string]: string | string[] | undefined }) {
+  const city = typeof searchParams.city === 'string' ? searchParams.city : undefined
+  const state = typeof searchParams.state === 'string' ? searchParams.state : undefined
+  const minPrice = typeof searchParams.minPrice === 'string' ? searchParams.minPrice : undefined
+  const maxPrice = typeof searchParams.maxPrice === 'string' ? searchParams.maxPrice : undefined
+  const propertyType = typeof searchParams.propertyType === 'string' ? searchParams.propertyType : undefined
+  const listingType = typeof searchParams.listingType === 'string' ? searchParams.listingType : undefined
+  const parking = typeof searchParams.parking === 'string' ? searchParams.parking : undefined
+  const amenities = typeof searchParams.amenities === 'string' ? searchParams.amenities : undefined
+  const moveInDate = typeof searchParams.moveInDate === 'string' ? searchParams.moveInDate : undefined
+  const leaseTerm = typeof searchParams.leaseTerm === 'string' ? searchParams.leaseTerm : undefined
+  const minIncome = typeof searchParams.minIncome === 'string' ? searchParams.minIncome : undefined
+  const minCredit = typeof searchParams.minCredit === 'string' ? searchParams.minCredit : undefined
+  const hasOpenHouse = typeof searchParams.hasOpenHouse === 'string' ? searchParams.hasOpenHouse : undefined
+  const priceReduced = typeof searchParams.priceReduced === 'string' ? searchParams.priceReduced : undefined
+  const hasVirtualTour = typeof searchParams.hasVirtualTour === 'string' ? searchParams.hasVirtualTour : undefined
+
+  const where: any = {
+    status: 'ACTIVE',
+  }
+
+  // Location search (combining city, neighborhood, zip functionality placeholder)
+  const locationParam = typeof searchParams.location === 'string' ? searchParams.location : undefined
+  if (locationParam) {
+    where.OR = [
+      { city: { contains: locationParam, mode: 'insensitive' } },
+      { state: { contains: locationParam, mode: 'insensitive' } },
+      { zipCode: { contains: locationParam, mode: 'insensitive' } },
+    ]
+  }
+
+  if (city) where.city = { contains: city, mode: 'insensitive' }
+  if (state) where.state = { contains: state, mode: 'insensitive' }
+  
+  if (minPrice || maxPrice) {
+    where.price = {}
+    if (minPrice) where.price.gte = parseFloat(minPrice)
+    if (maxPrice) where.price.lte = parseFloat(maxPrice)
+  }
+
+  // Bedrooms and bathrooms
+  const bedrooms = typeof searchParams.bedrooms === 'string' ? parseInt(searchParams.bedrooms) : undefined
+  if (bedrooms) where.bedrooms = { gte: bedrooms }
+  
+  const bathrooms = typeof searchParams.bathrooms === 'string' ? parseInt(searchParams.bathrooms) : undefined
+  if (bathrooms) where.bathrooms = { gte: bathrooms }
+
+  if (propertyType) where.propertyType = propertyType as any
+  if (listingType) where.listingType = listingType as any
+  if (parking) where.parking = parking as any
+  
+  if (amenities) {
+    const amenitiesArray = amenities.split(',')
+    where.amenities = { hasEvery: amenitiesArray }
+  }
+  if (moveInDate) {
+    where.moveInDate = { lte: new Date(moveInDate) }
+  }
+  if (leaseTerm) {
+    where.leaseTerm = parseInt(leaseTerm)
+  }
+  if (minIncome) {
+    where.incomeRequirement = { lte: parseFloat(minIncome) }
+  }
+  if (minCredit) {
+    where.creditRequirement = { lte: parseInt(minCredit) }
+  }
+  if (hasOpenHouse === 'true') {
+    where.openHouseDate = { gte: new Date() }
+  }
+  if (priceReduced === 'true') {
+    where.priceReduced = true
+  }
+  if (hasVirtualTour === 'true') {
+    where.virtualTourUrl = { not: null }
+  }
+
   const properties = await prisma.property.findMany({
-    where: {
-      status: 'ACTIVE'
-    },
+    where,
     include: {
       user: {
         select: {
@@ -30,8 +104,12 @@ async function getProperties() {
   return properties
 }
 
-export default async function PropertiesPage() {
-  const properties = await getProperties()
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const properties = await getProperties(searchParams)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,7 +130,9 @@ export default async function PropertiesPage() {
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <SearchFilters />
+              <Suspense fallback={<div>Loading filters...</div>}>
+                <SearchFilters />
+              </Suspense>
             </div>
           </div>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { PropertyType, ListingType, ParkingType } from '@prisma/client'
 
 // Common amenities for real estate
@@ -20,22 +21,25 @@ const AMENITIES = [
 ]
 
 export default function SearchFilters() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [filters, setFilters] = useState({
-    minPrice: '',
-    maxPrice: '',
-    bedrooms: '',
-    bathrooms: '',
-    propertyType: '',
-    listingType: '',
-    parking: '',
-    amenities: [] as string[],
-    moveInDate: '',
-    leaseTerm: '',
-    minIncome: '',
-    minCredit: '',
-    hasOpenHouse: false,
-    priceReduced: false,
-    hasVirtualTour: false,
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    bedrooms: searchParams.get('bedrooms') || '',
+    bathrooms: searchParams.get('bathrooms') || '',
+    propertyType: searchParams.get('propertyType') || '',
+    listingType: searchParams.get('listingType') || '',
+    parking: searchParams.get('parking') || '',
+    amenities: searchParams.get('amenities')?.split(',').filter(Boolean) || [] as string[],
+    moveInDate: searchParams.get('moveInDate') || '',
+    leaseTerm: searchParams.get('leaseTerm') || '',
+    minIncome: searchParams.get('minIncome') || '',
+    minCredit: searchParams.get('minCredit') || '',
+    hasOpenHouse: searchParams.get('hasOpenHouse') === 'true',
+    priceReduced: searchParams.get('priceReduced') === 'true',
+    hasVirtualTour: searchParams.get('hasVirtualTour') === 'true',
   })
 
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -71,6 +75,33 @@ export default function SearchFilters() {
       priceReduced: false,
       hasVirtualTour: false,
     })
+    
+    // Clear URL params
+    const currentUrl = new URL(window.location.href)
+    currentUrl.search = ''
+    router.push(currentUrl.pathname)
+  }
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams()
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        params.append(key, value.join(','))
+      } else if (typeof value === 'boolean' && value) {
+        params.append(key, 'true')
+      } else if (typeof value === 'string' && value.trim() !== '') {
+        params.append(key, value)
+      }
+    })
+
+    // Retain existing location param if any
+    const location = searchParams.get('location')
+    if (location) {
+      params.set('location', location)
+    }
+
+    router.push(`?${params.toString()}`)
   }
 
   return (
@@ -320,7 +351,10 @@ export default function SearchFilters() {
         </div>
       )}
 
-      <button className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded-md font-semibold transition-colors">
+      <button 
+        onClick={handleApplyFilters}
+        className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 rounded-md font-semibold transition-colors"
+      >
         Apply Filters
       </button>
       
